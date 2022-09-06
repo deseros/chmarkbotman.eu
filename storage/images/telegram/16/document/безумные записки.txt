@@ -1,0 +1,194 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Telegram\Bot\Actions;
+use Telegram\Bot\Keyboard\Keyboard;
+use Telegram\Bot\Commands\Command;
+use Telegram\Bot\Objects\Update;
+use Telegram\Bot\Api;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Telegram;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Str;
+use Telegram\Bot\FileUpload\InputFile;
+use Telegram\Bot\Answers;
+use Illuminate\Support\Facades\File;
+use App\Bitrix24\Bitrix24API;
+use App\Bitrix24\Bitrix24APIException;
+
+class TelegramController extends BaseController
+{
+  /** @var Api */
+  protected $telegram;
+
+  /**
+   * BotController constructor.
+   *
+   * @param Api $telegram
+   */
+  public function __construct(Api $telegram)
+  {
+      $this->telegram = $telegram;
+     
+  }
+ 
+  public function setwebhook()
+  {
+    $response = Telegram::setWebhook(['url' => env('APP_URL') . '/2hsjLZiN0v2EY4M2XGWzm1Ct3ArdEeaGROrDOoCmNZSMmKlIjosxRifSmfWcuNYQ/webhook']);
+    dd($response);
+  }
+ 
+  public function mywebhook(){
+    $telegramus = $this->telegram->commandsHandler(true); 
+    $telegram_user = $this->telegram->getWebhookUpdate()->getMessage();
+    $chat_id = $telegram_user["chat"]["id"];
+    $webhookURL = 'https://b24-zdzp5b.bitrix24.ru/rest/1/7z1d1d1ntzccpaq5/';
+    $bx24 = new Bitrix24API($webhookURL);  
+    if(isset($telegramus['message']['text'])){
+      if($telegramus['message']['text'] == 'стартуем'){
+        Log::info($telegramus['message']['message_id']);
+        Log::info($telegramus['message']['message_id']+1);
+       
+      $start_text = 'Бот успешно запущен' . "\n" . '<b>Ваш ID  </b>' . $telegramus['message']['from']['id'] . "\n" . '<b>ID текущего чата  </b>' . $telegramus['message']['chat']['id'];
+      $tesuk =$this->telegram->sendMessage(['chat_id' => $chat_id,'text' => $start_text,'parse_mode' => 'HTML' ]); 
+      $this->telegram->deleteMessage(['chat_id' => $chat_id, 'message_id' => $telegramus['message']['message_id']]);
+    }
+      else{
+        $telegramus['message']['text'] == 0;
+      }
+    }
+    $generator = $bx24->getUsers(
+      [ 'UF_USR_1637562671951' => $telegramus['message']['chat']['id']],
+      $order = 'ASC',
+      $sort = 'NAME' 
+  );
+  $user_arr = [];
+  foreach ($generator as $users) {  
+    $user_arr[] = $users; 
+  }
+  $find_last_ticket = collect(DB::table('bitrix_ticket')->where('from_id', '=', $telegramus['message']['from']['id'])->get())->last();
+  $user_last_ticket = [];
+  if(isset($find_last_ticket)){
+    foreach($find_last_ticket as $find_last_ticket){
+      $user_last_ticket[] = $find_last_ticket;
+    }
+  }
+  if(isset($telegramus['message']['text'])){    
+  if($telegramus['message']['text'] == 'Завершить отправку'){
+    $media_box = [];
+    $find_media = collect(DB::table('bitrix_media')->where('ticket_id', '=', $user_last_ticket[1])->get());
+    if(isset($find_media)){
+    foreach ($find_media as $media_item){
+      $media_box[] = 'n' . $media_item->bitrix_id_file;
+    }
+    $tesa = $bx24->updTask($user_last_ticket[1],
+    ["UF_TASK_WEBDAV_FILES"   => $media_box]
+);
+}
+$keyboard = [['Отправить запрос'],];
+    $reply_markup = Keyboard::make(['keyboard' => $keyboard, 'resize_keyboard' => true, 'one_time_keyboard' => true ]);
+$this->telegram->sendMessage(['chat_id' => $chat_id,'text' => 'Ваше обращение получено', 'reply_markup' => $reply_markup]);
+  }
+      if($telegram_user['text'] == "Отправить запрос")
+      {
+        $replyMarkup = array('force_reply' => true);
+      $encodedMarkup = json_encode($replyMarkup);
+      $response = $this->telegram->sendMessage(['chat_id' => $chat_id,'text' => 'Введите тему обращения','reply_markup' => $encodedMarkup ]);       
+      }  
+      if($telegramus['message']['text'] == 'Добавить фото'){
+        $replyMarkup = array('force_reply' => true);
+      $encodedMarkup = json_encode($replyMarkup);
+      $response = $this->telegram->sendMessage(['chat_id' => $chat_id,'text' => 'Добавляйте фотографии','reply_markup' => $encodedMarkup ]);
+      }
+       else {
+        $telegram_user['text'] == 0;
+       }
+     }
+if(array_key_exists('reply_to_message', $telegramus['message']) and $telegramus['message']['reply_to_message']['text'] == 'Введите тему обращения') {
+  
+  //$tess = Telegram::sendMessage(['chat_id' => $chat_id, 'text' => 'Ваша тема' . "\n" . $telegram_user['text']]);
+   $taskId = $bx24->addTask([
+    'TITLE'           => $telegram_user['text'], // Название задачи
+    'RESPONSIBLE_ID'  => 1, // ID ответственного пользователя
+    'START_DATE_PLAN' => date('Y/m/d H:i:s',$telegramus['message']['date']), // Плановая дата начала.  
+    'CREATED_BY' => $user_arr[0][0]['ID'],
+    'GROUP_ID' => $user_arr[0][0]['UF_USR_1637578456643'],
+]);
+DB::table('bitrix_ticket')->insert([
+  'bitrix_ticket' => $taskId['task']['id'] ,
+  'bitrix_user' => $taskId['task']['createdBy'],
+   'from_id' => $telegramus['message']['from']['id'], 
+   'chat_id' => $telegramus['message']['chat']['id'], 
+   'ticket_subject' => $taskId['task']['title'],
+   'created_at' => date('Y/m/d H:i:s',$telegramus['message']['date'])
+  ]);
+  $replyMarkup = array('force_reply' => true);
+      $encodedMarkup = json_encode($replyMarkup);
+  Telegram::sendMessage(['chat_id' => $chat_id, 'text' => 'Опишите вашу проблему', 'reply_markup' => $encodedMarkup]);
+  }   
+if(array_key_exists('reply_to_message', $telegramus['message']) and $telegramus['message']['reply_to_message']['text'] == 'Опишите вашу проблему') 
+{  
+   //$tess = Telegram::sendMessage(['chat_id' => $chat_id, 'text' => 'Ваше обращение' . "\n" . $telegram_user['text']]); 
+    $bx24->updTask($user_last_ticket[1],
+    ['DESCRIPTION' => $telegramus['message']['text']]);
+    $keyboard = [['Добавить фото', 'Завершить отправку'],];
+    $reply_markup = Keyboard::make(['keyboard' => $keyboard, 'resize_keyboard' => true, 'one_time_keyboard' => true ]);
+   Telegram::sendMessage(['chat_id' => $chat_id, 'text' => 'Нажми кнопку «Добавить фото» для добавления фото или завершите отправку обращения', 'reply_markup' => $reply_markup]);
+   }  
+   $newarr = array();
+   if(isset($telegramus['message']['photo'] )){
+     if(array_key_exists('photo', $telegramus['message'])  and isset($telegramus['message']['reply_to_message']['text']) == 'Добавляйте фотографии'){
+     //Telegram::sendPhoto(['chat_id' => $chat_id, 'photo' => $telegramus['message']['photo'][2]['file_id']]);
+      $telegram_id_file = $telegramus['message']['photo'][2]['file_id'];
+       $file_id = "https://api.telegram.org/bot" . 
+      env('TELEGRAM_BOT_TOKEN') . "/getFile?file_id=" . $telegram_id_file;
+       $file_request = json_decode(Http::get($file_id)->getBody(),true);
+     $file_url = "https://api.telegram.org/file/bot" .
+     env('TELEGRAM_BOT_TOKEN'). "/" . $file_request['result']['file_path'];
+     $filename = Str::random(10). '.jpg';
+     $start_picture = $bx24->uploadfileDiskFolder(
+        $filderId = 26,
+        $rawFile = file_get_contents($file_url),
+        [ 'NAME' => $filename],
+        $isBase64FileData = false
+    );
+    DB::table('bitrix_media')->insert([
+      'ticket_id' => $user_last_ticket[1],
+      'bitrix_id_file' => $start_picture['ID'],
+      'bitrix_file_name' => $start_picture['NAME']  
+      ]); 
+      $keyboard = [['Добавить фото', 'Завершить отправку'],];
+    $reply_markup = Keyboard::make(['keyboard' => $keyboard, 'resize_keyboard' => true, 'one_time_keyboard' => true ]);
+   Telegram::sendMessage(['chat_id' => $chat_id, 'text' => 'Фото получено, можете загрузить еще или завершить отправку', 'reply_markup' => $reply_markup]); 
+   $this->telegram->deleteMessage(['chat_id' => $chat_id, 'message_id' => $telegramus['message']['message_id']+1]);
+  }
+    else{
+      $telegramus['message']['photo'] == 0;    
+    }    
+  }
+  if(isset($telegramus['message']['document'])){
+    if(array_key_exists('document', $telegramus['message']) and isset($telegramus['message']['reply_to_message']['text']) == 'Добавляйте фотографии') {
+      $keyboard = [['Добавить фото', 'Завершить отправку'],];
+      $reply_markup = Keyboard::make(['keyboard' => $keyboard, 'resize_keyboard' => true, 'one_time_keyboard' => true ]);
+     Telegram::sendMessage(['chat_id' => $chat_id, 'text' => 'В данный момент мы принимаем только фотографии к задачам', 'reply_markup' => $reply_markup]); 
+    }
+    else{
+      $telegramus['message']['document'] == 0;
+    }
+  }
+  if(isset($telegramus['message']['video'])){
+    if(array_key_exists('video', $telegramus['message']) and isset($telegramus['message']['reply_to_message']['text']) == 'Добавляйте фотографии') {
+      $keyboard = [['Добавить фото', 'Завершить отправку'],];
+      $reply_markup = Keyboard::make(['keyboard' => $keyboard, 'resize_keyboard' => true, 'one_time_keyboard' => true ]);
+     Telegram::sendMessage(['chat_id' => $chat_id, 'text' => 'В данный момент мы принимаем только фотографии к задачам', 'reply_markup' => $reply_markup]); 
+    }
+    else{
+      $telegramus['message']['video'] == 0;
+    }
+  }
+}
+  }

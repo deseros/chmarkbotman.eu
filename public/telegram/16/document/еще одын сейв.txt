@@ -1,0 +1,30 @@
+ public function sendmsg(Request $request){
+        $main_arr[] = $request;
+        $http_reg = new \GuzzleHttp\Client();
+        //$res = $http_reg->request('POST', 'https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN') . '/sendMessage', [
+         //   'form_params' => [
+          //      'chat_id' => '-1001725668349',
+           //     'text' => $request->msg,
+            //    'parse_mode' => 'HTML',
+            //]
+        //]);
+        $req_id = Client::all();
+        $test_arr = [];
+        foreach ($req_id as $main_id) {
+            if($request->input('client' . $main_id->id) != null){
+            $test_arr[] = $request->input('client' . $main_id->id);
+            }
+        }
+        foreach ($test_arr as  $chat_id) {
+            $res = $http_reg->request('POST', 'https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN') . '/sendMessage', [
+                'form_params' => [
+                     'chat_id' => $chat_id,
+                     'text' => $request->msg,
+                     'parse_mode' => 'HTML',
+                 ]
+             ]);
+        }
+     
+         //Log::info($request->input('client' . '16'));
+        return redirect()->back()->withSuccess('Обращение успешно обновлено!');
+    }
