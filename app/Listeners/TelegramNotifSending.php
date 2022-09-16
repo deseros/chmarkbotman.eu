@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
 use App\Http\Controllers\FindClientDB;
-
+use App\Models\Ticket;
 class TelegramNotifSending
 {
     public $event;
@@ -30,9 +30,8 @@ class TelegramNotifSending
 
         $find = new FindClientDB();
         $client = new Client();
-
-        /*$upd_ticket->tg_channel_msg_id = json_decode($res->getBody(),true)['result']['message_id'];
-        $upd_ticket->save();*/
+        $upd_ticket = Ticket::find($find->find_last_ticket()[0]['id']);
+     
         if (!empty($find->packed_photo_posting()[0]['media']) and empty($find->packed_document_posting()[0]['media'])) {
             $res = $client->request(
                 'POST',
@@ -44,8 +43,8 @@ class TelegramNotifSending
                     ]
                 ]
             );
-            //$upd_ticket->tg_channel_msg_id = json_decode($res->getBody(),true)['result'][0]['message_id'];
-            //$upd_ticket->save();
+            $upd_ticket->tg_channel_msg_id = json_decode($res->getBody(),true)['result'][0]['message_id'];
+            $upd_ticket->save();
         } else if (!empty($find->packed_document_posting()[0]['media']) and empty($find->packed_photo_posting()[0]['media'])) {
             $res = $client->request(
                 'POST',
@@ -57,8 +56,8 @@ class TelegramNotifSending
                     ]
                 ]
             );
-            //$upd_ticket->tg_channel_msg_id = json_decode($res->getBody(),true)['result'][0]['message_id'];
-            //$upd_ticket->save();
+            $upd_ticket->tg_channel_msg_id = json_decode($res->getBody(),true)['result'][0]['message_id'];
+            $upd_ticket->save();
         } else if (!empty($find->packed_document_posting()[0]['media']) and !empty($find->packed_photo_posting()[0]['media'])) {
             $res = $client->request(
                 'POST',
@@ -70,8 +69,8 @@ class TelegramNotifSending
                     ]
                 ]
             );
-            //$upd_ticket->tg_channel_msg_id = json_decode($res->getBody(),true)['result'][0]['message_id'];
-            //$upd_ticket->save();
+            $upd_ticket->tg_channel_msg_id = json_decode($res->getBody(),true)['result'][0]['message_id'];
+            $upd_ticket->save();
         } else {
             $link_bot = "⚙️ Для отправки обращения перейдите в @chmarkbot_bot";
             $res = $client->request('POST', 'https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN') . '/sendMessage', [
@@ -81,8 +80,8 @@ class TelegramNotifSending
                     'parse_mode' => 'HTML',
                 ]
             ]);
-            //$upd_ticket->tg_channel_msg_id = json_decode($res->getBody(),true)['result']['message_id'];
-            //$upd_ticket->save();
+            $upd_ticket->tg_channel_msg_id = json_decode($res->getBody(),true)['result']['message_id'];
+            $upd_ticket->save();
         }
     }
 }

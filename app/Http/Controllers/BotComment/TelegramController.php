@@ -29,9 +29,9 @@ class TelegramController extends Controller
     }
 
     public function setwebhook()
-  {
-    $response = Telegram::setWebhook(['url' => env('APP_URL') .'/commentwebhook', 'drop_pending_updates' => true]);
-    dd($response);
+  {  
+    $response = Http::get('https://api.telegram.org/bot' . env('TELEGRAM_BOT_TOKEN_COMMENT') . '/setWebhook?url='. env('APP_URL') . '/commentwebhook&drop_pending_updates=true');
+    dd($response->successful());
   }
   public function setwebhookmain()
   {
@@ -39,8 +39,12 @@ class TelegramController extends Controller
     dd($response->successful());
   }
    public function mywebhook(){
+    
    $telegramus = $this->telegram->commandsHandler(true); 
    $telegram_user = $this->telegram->getWebhookUpdate()->getMessage();
+   $avatar_id = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN_COMMENT'). "/getUserProfilePhotos?user_id=" . $telegram_user['from']['id'] . "&limit=1";
+   $avatar_request = json_decode(Http::get($avatar_id)->getBody(),true);
+   Log::info($avatar_request);
    if(isset($telegram_user['from']['first_name'])){
      $username = $telegram_user['from']['first_name'];
    }
