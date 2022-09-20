@@ -15,7 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        Relation::morphMap([
+            'tags' => 'App\Models\Tags',
+        ]);
     }
 
     /**

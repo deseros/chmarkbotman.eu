@@ -24,4 +24,8 @@ class Tags extends Model
     public function ticket(){
       return $this->morphedByMany(Ticket::class, 'taggable');
     }
+    public function getTaskStatus(){
+
+      return  $this->where('type_tags', 'status')->get();
+    }
 }

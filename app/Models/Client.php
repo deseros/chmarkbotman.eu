@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ClientTelegramID;
+use App\Models\User;
 
 class Client extends Model
 {
@@ -22,4 +23,13 @@ class Client extends Model
     public function tg_id(){
         return $this->hasMany('App\Models\ClientTelegramId', 'clients_id');
     }
+/**
+ * Get all of the comments for the Client
+ *
+ * @return \Illuminate\Database\Eloquent\Relations\HasMany
+ */
+public function users()
+{
+    return $this->hasMany(User::class, 'client_id');
+}
 }

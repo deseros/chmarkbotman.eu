@@ -50,60 +50,64 @@ $(document).ready(function(){
             @csrf
           <div class="card-body">
             <div class="form-group">
-              <label for="name-client">Имя приложения</label>
-              <input type="text" name="name_app" value="{{ env('TESTOR_NAME') }}" class="form-control" id="name_app" placeholder="Введите название" required>
+              <label for="name-client">Домен приложение (указывать с https без слеша)</label>
+              <input type="text" name="name_app" value="{{ env('APP_URL') }}" class="form-control" id="name_app" placeholder="Укажите домен" required>
             </div>
             <div class="form-group">
               <label for="name-client">Токен Бота Поддержки</label>
-              <input type="text" name="token_bot_main" value="{{ env('TELEGRAM_BOT_TOKEN') }}" class="form-control" id="token_bot_main" placeholder="Введите название" required>
+              <input type="text" name="token_bot_main" value="{{ env('TELEGRAM_BOT_TOKEN') }}" class="form-control" id="token_bot_main" placeholder="Токен основого бота" required>
             </div>
-            <!--<div class="form-group">
+            <div class="form-group">
               <label for="name-client">Токен бота комментариев</label>
-              <input type="text" name="token_bot_comment" value="{{ env('TELEGRAM_BOT_TOKEN_COMMENT') }}" class="form-control" id="token_bot_comment" placeholder="Введите название" required>
-            </div>-->
-            <div class="form-group">
-            <h2>Основной бот</h2>
-            <div class="row">
-             <div class="col-md-3">
-              <button type="button" class="btn btn-block btn-primary" id="main-bot-start">Запустить / перезапустить</button>
-             </div>
-             <div class="col-md-3">
-              <button type="button" class="btn btn-block btn-primary" id="main-bot-stop">Отключить</button>
-             </div>
-           
+              <input type="text" name="token_bot_comment" value="{{ env('TELEGRAM_BOT_TOKEN_COMMENT') }}" class="form-control" id="token_bot_comment" placeholder="Токен бота комметариев" required>
             </div>
-           
-           <p><b>Статус работы:</b> <span class="main_bot_status"> </span></p>    
-          
-          
-           
-      
-            </div>
-
             <div class="form-group">
-              <h2>Бот для комментариев</h2>
-              <div class="row">
-               <div class="col-md-3">
-                <button type="button" class="btn btn-block btn-primary"  id="comment-bot-start">Запустить / перезапустить</button>
-               </div>
-               <div class="col-md-3">
-                <button type="button" class="btn btn-block btn-primary"  id="comment-bot-stop">Отключить</button>
-               </div>
-           
-              </div>
-          
-             <p><b>Статус работы:</b> <span class="comment_bot_status"> </span></p>    
-             
-            
-             
-        
-              </div>
+              <label for="name-client">Вебхук битрикс</label>
+              <input type="text" name="bx_webhook" value="{{ env('BX_WEBHOOK') }}" class="form-control" id="bx_webhook" placeholder="Битрикс вебхук" required>
+            </div>
 
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">Обновить</button>
               </div>   
         </form>
        
+        <div class="form-group">
+        <h2>Основной бот</h2>
+        <div class="row">
+         <div class="col-md-3">
+          <button type="button" class="btn btn-block btn-primary" id="main-bot-start">Запустить / перезапустить</button>
+         </div>
+         <div class="col-md-3">
+          <button type="button" class="btn btn-block btn-primary" id="main-bot-stop">Отключить</button>
+         </div>
+       
+        </div>
+       
+       <p><b>Статус работы:</b> <span class="main_bot_status"> </span></p>    
+      
+      
+       
+  
+        </div>
+
+        <div class="form-group">
+          <h2>Бот для комментариев</h2>
+          <div class="row">
+           <div class="col-md-3">
+            <button type="button" class="btn btn-block btn-primary"  id="comment-bot-start">Запустить / перезапустить</button>
+           </div>
+           <div class="col-md-3">
+            <button type="button" class="btn btn-block btn-primary"  id="comment-bot-stop">Отключить</button>
+           </div>
+       
+          </div>
+      
+         <p><b>Статус работы:</b> <span class="comment_bot_status"> </span></p>    
+         
+        
+         
+    
+          </div>
     </div>
   
              

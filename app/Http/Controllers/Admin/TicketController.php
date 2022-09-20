@@ -118,7 +118,7 @@ class TicketController extends Controller
         return view('admin.ticket.edit',[
             'ticket' => $ticket,
             'client' => $clients,
-            'tags' => $tags->where('type_tags', '=', 'status')->get(),
+            'tags' => $tags->getTaskStatus(),
             'user' => $user->orderBy('created_at', 'desc')->get()
         ]);
     }
@@ -136,7 +136,7 @@ class TicketController extends Controller
         $ticket->description = $request->description;
         $ticket->client_id = $request->client_id;
         $ticket->bx_ticket_id = $request->bx_ticket_id;
-        $ticket->assign_to = $request->assign_to;
+        $ticket->assigned_to = $request->assign_to;
         $ticket->save();
         $ticket->tags()->sync($request->tags);
         return redirect()->back()->withSuccess('Обращение успешно обновлено!');
