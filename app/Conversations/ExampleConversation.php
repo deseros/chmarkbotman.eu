@@ -75,14 +75,13 @@ class ExampleConversation extends Conversation
                 $this->body = $answer->getText();
                 $main_user = new FindClientDB();
                 $curr_user = $main_user->find_client()['id'];
-                Ticket::insert(array(
+                $ticket = Ticket::create(array(
                     'subject' => $this->subject,
                     'description' => $this->body,
                     'client_id' => $curr_user,
                     'created_at' => date('Y/m/d H:i:s')
                 ));
-
-
+                $ticket->tags()->sync(1);
                 $this->send_media();
             }
         });

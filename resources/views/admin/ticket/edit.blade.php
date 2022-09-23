@@ -65,7 +65,7 @@
                       </div>
                       <div class="form-group">
                         <label for="tags">Ответственный специалист</label>
-                          <select name="assign_to" class="form-control" required>
+                          <select name="assigned_to" class="form-control" required>
                             @foreach ($user as $user_item)
                                 <option value="{{ $user_item['id'] }}">{{ $user_item['name'] }}</option>
                             @endforeach

@@ -40,7 +40,7 @@
  
    <form action="{{route('tickets.index')}}" method="GET">
     @foreach ($tags as $tags_item)
-    <button name="test" type="submit" value="{{$tags_item['id']}}">{{$tags_item['name_tags']}}</button>
+    <button name="tags" type="submit" value="{{$tags_item['id']}}">{{$tags_item['name_tags']}}</button>
 @endforeach
      </form> 
 
@@ -61,19 +61,24 @@
                         <th style="width: 1%">
                             ID
                         </th>
-                        <th style="width: 20%">
+                        <th style="width: 10%">
                            Тема обращение
                         </th>
-                        <th style="width: 20%">
+                        <th style="width: 10%">
                           Клиент
-                       </th>    
+                       </th>  
+                       <th style="width: 15%">
+                      Отвественный  
+                      </th>  
                         <th style="width: 28%">
                         </th>
                     </tr>
                 </thead>
                 <tbody>
+              
                     @foreach ($ticket as $ticket_item )
                     <tr>
+                      
                         <td>
                             {{ $ticket_item['id']}}
                         </td>
@@ -87,7 +92,9 @@
                             </small>
                         </td>
                          <td>{{ $ticket_item->cur_client['name_client']}}</td>
-    
+                         <td>
+                          {{$ticket_item->assignee['name']}}
+                         </td>
                         <td class="project-actions text-right">
                           <a class="btn btn-info btn-sm" href="{{ route('tickets.show', $ticket_item['id'])}}">
                             <i class="fas fa-pencil-alt">

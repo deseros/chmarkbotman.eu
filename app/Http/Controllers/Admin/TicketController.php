@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tags;
 use App\Models\User;
+use App\Http\Controllers\General\PaginateController;
 
 class TicketController extends Controller
 {
@@ -19,11 +20,22 @@ class TicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Tags $tags, Request $request)
+    public function index(Tags $tags, Ticket $ticket, Request $request, PaginateController $paginates)
     {
-      
-        $tickets = Ticket::orderBy('created_at', 'desc')->paginate(10);
-    
+        
+        if ($request->has('tags')) {
+          
+            $collection_ticket = $ticket->with('tags')
+                      ->orWhereHas('tags', function($q) use ($request){
+                           
+                            $q->where('tags_id', 'LIKE', $request->tags);
+                      })->get();
+                      $tickets = $paginates->paginate($collection_ticket, 10);
+     
+        }
+        else{
+            $tickets = $ticket->with('tags')->orderBy('created_at', 'desc')->paginate(10);  
+        }
         return view('admin.ticket.index', [
             'ticket' => $tickets,
             'tags' => $tags->get()
@@ -51,16 +63,10 @@ class TicketController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,Ticket $ticket)
     {
-        $ticket = new Ticket();
-        $ticket->subject = $request->subject;
-        $ticket->description = $request->description;
-        $ticket->client_id = $request->client_id;
-        $ticket->bx_ticket_id = $request->bx_ticket_id;
-        $ticket->assign_to = $request->assign_to;
-        $ticket->save();
-        $ticket->tags()->sync($request->tags);
+        $created_ticket = $ticket->create($request->all());
+        $created_ticket->tags()->sync($request->tags);
         return redirect()->back()->withSuccess('Обращение добавлено');
     }
 
@@ -132,12 +138,7 @@ class TicketController extends Controller
      */
     public function update(Request $request, Ticket $ticket)
     {
-        $ticket->subject = $request->subject;
-        $ticket->description = $request->description;
-        $ticket->client_id = $request->client_id;
-        $ticket->bx_ticket_id = $request->bx_ticket_id;
-        $ticket->assigned_to = $request->assign_to;
-        $ticket->save();
+        $ticket->update($request->all());
         $ticket->tags()->sync($request->tags);
         return redirect()->back()->withSuccess('Обращение успешно обновлено!');
     }

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Builder;
-use App\Http\Controllers\Admin\Filters\QueryFilter;
 use App\Models\TicketReplies;
+
 
 class Ticket extends Model
 {
@@ -19,6 +19,7 @@ class Ticket extends Model
       'client_id',
       'assign_to',
   ];
+    
     public function cur_client()
     {
         return $this->belongsTo('App\Models\Client', 'client_id');
@@ -31,7 +32,7 @@ class Ticket extends Model
 
       public function assignee()
       {
-          return $this->belongsTo(User::class, 'assigned_to');
+          return $this->belongsTo('App\Models\User', 'assigned_to');
       }
     
         
@@ -45,8 +46,7 @@ class Ticket extends Model
   return $this->hasMany(TicketReplies::class)->orderBy('created_at', 'desc');
   
  }
+ 
       
-      public function scopeFilter(Builder $builder, QueryFilter $filter){
-        return $filter->apply($builder);
-    }
+    
 }
