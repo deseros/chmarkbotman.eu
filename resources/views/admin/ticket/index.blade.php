@@ -61,6 +61,9 @@
                         <th style="width: 1%">
                             ID
                         </th>
+                        <th style="10%">
+                        Статус
+                        </th>
                         <th style="width: 10%">
                            Тема обращение
                         </th>
@@ -83,6 +86,11 @@
                             {{ $ticket_item['id']}}
                         </td>
                         <td>
+                          @foreach ($ticket_item->tags as $item_tags)
+                              {{$item_tags['name_tags']}}
+                          @endforeach
+                        </td>
+                        <td>
                             <a>
                                 {{ $ticket_item['subject']}}
                             </a>
@@ -93,7 +101,15 @@
                         </td>
                          <td>{{ $ticket_item->cur_client['name_client']}}</td>
                          <td>
-                          {{$ticket_item->assignee['name']}}
+                       
+                         @if ($ticket_item['assigned_to'])
+                         {{$ticket_item->assignee['name']}}
+                         @else
+                             Не назначено
+                         @endif
+                          
+                       
+                          
                          </td>
                         <td class="project-actions text-right">
                           <a class="btn btn-info btn-sm" href="{{ route('tickets.show', $ticket_item['id'])}}">
@@ -123,12 +139,13 @@
                   
                 </tbody>
             </table>
-            {{ $ticket->links('layouts.pagination') }}
+           
+           
           </div>    
     </div>
 
      
      
         </section>
-      
+       
 @endsection

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ClientTelegramID;
 use App\Models\User;
-
+use App\Models\Ticket;
 class Client extends Model
 {
     use HasFactory;
@@ -31,5 +31,8 @@ class Client extends Model
 public function users()
 {
     return $this->hasMany(User::class, 'client_id');
+}
+public function ticket(){
+    return $this->hasMany(Ticket::class, 'client_id');
 }
 }

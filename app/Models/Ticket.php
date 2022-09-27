@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\TicketReplies;
-
+use App\Http\Controllers\General\Filters\QueryFilter;
 
 class Ticket extends Model
 {
@@ -24,6 +24,10 @@ class Ticket extends Model
     {
         return $this->belongsTo('App\Models\Client', 'client_id');
     }
+    public function client()
+    {
+        return $this->belongsTo('App\Models\Client', 'client_id');
+    }
 
     public function tags()
     {
@@ -34,8 +38,7 @@ class Ticket extends Model
       {
           return $this->belongsTo('App\Models\User', 'assigned_to');
       }
-    
-        
+           
  /**
   * Get all of the comments for the Ticket
   *
@@ -46,7 +49,14 @@ class Ticket extends Model
   return $this->hasMany(TicketReplies::class)->orderBy('created_at', 'desc');
   
  }
- 
-      
+/**
+ * @param Builder $builder
+ * @param QueryFilter $filter
+ */
+public function scopeFilter(Builder $builder, QueryFilter $filter)
+{
+    $filter->apply($builder);
+}
+     
     
 }

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Tags;
 use App\Models\User;
 use App\Http\Controllers\General\PaginateController;
+use App\Http\Controllers\General\Filters\TicketFilter;
 
 class TicketController extends Controller
 {
@@ -20,22 +21,10 @@ class TicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Tags $tags, Ticket $ticket, Request $request, PaginateController $paginates)
+    public function index(Tags $tags, TicketFilter $filter)
     {
-        
-        if ($request->has('tags')) {
-          
-            $collection_ticket = $ticket->with('tags')
-                      ->orWhereHas('tags', function($q) use ($request){
-                           
-                            $q->where('tags_id', 'LIKE', $request->tags);
-                      })->get();
-                      $tickets = $paginates->paginate($collection_ticket, 10);
-     
-        }
-        else{
-            $tickets = $ticket->with('tags')->orderBy('created_at', 'desc')->paginate(10);  
-        }
+   
+        $tickets = Ticket::with('tags')->filter($filter)->paginate(10);
         return view('admin.ticket.index', [
             'ticket' => $tickets,
             'tags' => $tags->get()
