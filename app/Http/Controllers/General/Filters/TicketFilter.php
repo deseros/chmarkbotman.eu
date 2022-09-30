@@ -38,4 +38,8 @@ class TicketFilter extends QueryFilter
     {
         $this->builder->where('client_id', $client_id);
     }
+    public function datacreate(string $type){
+        $this->builder->reorder('created_at', $type);
+    }
+   
 }

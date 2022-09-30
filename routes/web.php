@@ -36,5 +36,4 @@ Route::middleware(['role:admin'])->prefix('admin_lk')->group(function(){
  Route::resource('tags', App\Http\Controllers\Admin\TagsController::class);
  Route::match(['get', 'post'], 'tgsettings', 'App\Http\Controllers\TgSettingsController@index')->name('tgsettings');
  Route::match(['get', 'post'], 'tgsettings/tgsendmessage', 'App\Http\Controllers\TgSettingsController@update_setting')->name('update_setting');
- //Route::resource('tgsettings', App\Http\Controllers\TgSettingsController::class);
 });

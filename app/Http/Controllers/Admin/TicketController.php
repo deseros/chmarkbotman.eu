@@ -23,8 +23,8 @@ class TicketController extends Controller
      */
     public function index(Tags $tags, TicketFilter $filter)
     {
-   
-        $tickets = Ticket::with('tags')->filter($filter)->paginate(10);
+        Log::info(Ticket::query()->paginate(3));
+        $tickets = Ticket::query()->with('tags')->filter($filter)->paginate(10);
         return view('admin.ticket.index', [
             'ticket' => $tickets,
             'tags' => $tags->get()
