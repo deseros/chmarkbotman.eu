@@ -3,6 +3,20 @@
 @section('title', 'Список клиентов')
 
 @section('content')
+<style>
+.filter_item_container label{
+margin-left:10px;
+}
+</style>
+<script>
+    $(document).ready(function(){
+        $('.ticket_sort').on('change', function (e) {
+        //var optionSelected = $("option:selected", this);
+        //var valueSelected = this.value;
+        alert(this.value);
+    });
+    });
+    </script>
 <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -16,7 +30,7 @@
         </div>
     @endif
       </div><!-- /.row -->
-     
+
     </div><!-- /.container-fluid -->
   </div>
   <!-- /.content-header -->
@@ -25,16 +39,33 @@
   <section class="content">
     <div class="container-fluid">
         <div class="row mb-2">
-           
+
           </div>
         </div><!-- /.container-fluid -->
       </section>
       <section class="content">
-  
+
         <!-- Default box -->
         <div class="card">
           <div class="card-header">
+            <div class="row">
+           <div class="col-md-6">
            <h2>Фильтры</h2>
+           </div>
+           <div class="col-md-6">
+            <form class="search-form" action="{{ route('tickets.index')}}" method="GET">
+              <div class="input-group">
+                <input type="text" name="subject" class="form-control" placeholder="Искать по названию">
+
+                <div class="input-group-append">
+                  <button type="submit" class="btn btn-warning"><i class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.input-group -->
+            </form>
+           </div>
+            </div>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                 <i class="fas fa-minus"></i>
@@ -45,48 +76,75 @@
             </div>
           </div>
           <div class="card-body">
-            <form action="{{ route('tickets.index')}}" method="GET" class="filter_container" style="display: flex">
-           
+            <form action="{{ route('tickets.index')}}" method="GET" class="filter_container">
+           <div class="row">
           <div class="col-md-3">
-          <label for="exampleSelectBorder">Статус заявки</code></label>
-          <select name="tags" class="custom-select form-control-border" id="exampleSelectBorder">
-            <option value="">Выберите статус</option>
-            @foreach ($tags as $tags_item)
-            <option value="{{$tags_item['id']}}" @if(request()->has('tags')) selected @endif>{{$tags_item['name_tags']}} </option>
-            @endforeach
-          </select>
-   
+          <p class="filter_head_block">Статус заявки</p>
+       <div class="filter_item_content">
+          @foreach ($tags as $tags_item)
+          <div class="filter_item_container">
+          <input
+          type="checkbox" id="tags" name="tags[{{$loop->index}}]" value="{{$tags_item['id']}}"  @if (request()->has('tags'))
+          @if (in_array($tags_item['id'], Request()->tags)) checked @endif
+          @endif><label for="tags">{{$tags_item['name_tags']}}</label>
+          </div>
+          @endforeach
+          </div>
+          </div>
+
+          <div class="col-md-3">
+            <p class="filter_head_block">Клиент</p>
+            <div class="filter_item_content">
+                @foreach ($client as $client_item)
+                <div class="filter_item_container">
+                 <input
+                 type="checkbox" id="client" name="client[{{$loop->index}}]" value="{{$client_item['id']}}"  @if (request()->has('client'))
+                 @if (in_array($client_item['id'], Request()->client)) checked @endif
+                 @endif><label for="client">{{$client_item['name_client']}}</label>
+                 </div>
+
+                @endforeach
+            </div>
+
           </div>
           <div class="col-md-3">
-          <label for="exampleSelectBorder">Клиент</code></label>
-          <select name="client" class="custom-select form-control-border" id="exampleSelectBorder">
-            <option value="">Выберите клиента</option>
-            <option>Value 2</option>
-            <option>Value 3</option>
-          </select>
+            <p class="filter_head_block">Ответственный</p>
+            <div class="filter_item_content" style="height: 200px; overflow-y: scroll;">
+                @foreach ($user as $user_item)
+                <div class="filter_item_container">
+                 <input
+                 type="checkbox" id="assign" name="assign[{{$loop->index}}]" value="{{$user_item['id']}}"  @if (request()->has('assign'))
+                 @if (in_array($user_item['id'], Request()->assign)) checked @endif
+                 @endif><label for="assign">{{$user_item['name']}}</label>
+                 </div>
+
+                @endforeach
+            </div>
+
           </div>
-          <div class="col-md-3">
-          <label for="exampleSelectBorder">Сортировка</code></label>
-          <select name="sort" class="custom-select form-control-border" id="exampleSelectBorder">
-            <option value="">Выбрать сортировку</option>
-            <option value="created_at">Дата по возрастанию</option>
-            <option value="-created_at">Дата по убыванию</option>
-          </select>
-          </div>
-          <div class="col-md-3">
-           <button type="submit">Фильтровать</button>
-          </div>
+
+          <div class="col-md-12">
+           <button type="btn btn-block btn-primary btn-flat" style="float:right; margin-top:30px; color: #fff;
+           background-color: #007bff;
+           border-color: #007bff;">Фильтровать</button>
+           </div>
         </form>
           </div>
         </div>
       </section>
-      
+
       <section class="content">
-  
+
         <!-- Default box -->
         <div class="card">
           <div class="card-header">
-               
+            <div class="col-md-3">
+              <label for="exampleSelectBorder">Сортировка</code></label>
+              <select name="sort" class="custom-select form-control-border ticket_sort" id="exampleSelectBorder" placeholder="Выберите сортировку">
+                <option value="created_at">Дата по возрастанию</option>
+                <option value="-created_at">Дата по убыванию</option>
+              </select>
+              </div>
           </div>
           <div class="card-body p-0">
             <table class="table table-striped projects">
@@ -103,20 +161,20 @@
                         </th>
                         <th style="width: 10%">
                           Клиент
-                       </th>  
+                       </th>
                        <th style="width: 15%">
-                      Отвественный  
-                      </th>  
+                      Отвественный
+                      </th>
                       <th style="width: 10%">Дата создания</th>
                         <th style="width: 28%">
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-              
+
                     @foreach ($ticket as $ticket_item )
                     <tr>
-                      
+
                         <td>
                             {{ $ticket_item['id']}}
                         </td>
@@ -130,15 +188,15 @@
                                 {{ $ticket_item['subject']}}
                             </a>
                             <br/>
-                       
+
                         </td>
                          <td>{{ $ticket_item->cur_client['name_client']}}</td>
-                         <td> 
+                         <td>
                          @if ($ticket_item['assigned_to'])
                          {{$ticket_item->assignee['name']}}
                          @else
                              Не назначено
-                         @endif 
+                         @endif
                          </td>
                          <td>
                           {{ $ticket_item['created_at']}}
@@ -163,21 +221,22 @@
                                 Удалить
                             </button>
                             </form>
-                            
+
                         </td>
-                    </tr>  
+                    </tr>
                     @endforeach
-                    
-                  
+
+
                 </tbody>
             </table>
-           
-           
-          </div>    
+
+
+          </div>
     </div>
 
-     
-     
+    {{ $ticket->links('layouts.pagination') }}
+
         </section>
-       
+
 @endsection
+

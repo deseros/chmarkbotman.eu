@@ -7,26 +7,26 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          
+
           <h1 class="m-0">Обращение № {{$ticket['bx_ticket_id']}}</h1>
           <div class="card-body">
           <h3 class="text-primary">{{$ticket['subject']}}</h3>
           <p class="text-muted">{{$ticket['description']}}</p>
           <p><b>Наименование клиента</b> {{ $client['name_client']}}</p>
-          </div>      
+          </div>
       </div>
       <div class="col-sm-6">
         <div class="card direct-chat direct-chat-primary">
           <div class="card-header">
-            <h3 class="card-title">Комментарии</h3>       
+            <h3 class="card-title">Комментарии</h3>
           </div>
-         
+
           <!-- /.card-header -->
           <div class="card-body">
             <!-- Conversations are loaded here -->
             <div class="direct-chat-messages">
               <!-- Message. Default to the left -->
-              @foreach ($reply_msg as $reply_item)
+              @foreach ($ticket->replies as $reply_item)
               <div class="direct-chat-msg">
                 <div class="direct-chat-infos clearfix">
                   <span class="direct-chat-name float-left">{{ $reply_item->username}}</span>
@@ -35,18 +35,18 @@
                 <!-- /.direct-chat-infos -->
                 <img class="direct-chat-img" src="/admin/dist/img/user1-128x128.jpg" alt="message user image">
                 <!-- /.direct-chat-img -->
-                
+
                 @isset($reply_item->replies)
                 <div class="direct-chat-text">
                 {{ $reply_item->replies}}
               </div>
-                @endisset 
-              
-                @isset($reply_item->file_path) 
+                @endisset
+
+                @isset($reply_item->file_path)
                 @if ($reply_item->mime_type == 'photo')
                 <a href="{{ Storage::disk('images')->url($reply_item->file_path) }}" data-toggle="lightbox" data-title="{{$reply_item->file_name}}" data-gallery="gallery">
                   <img src="{{ Storage::disk('images')->url($reply_item->file_path) }}" class="img-fluid mb-2" alt="white sample"  width="300"/>
-                </a> 
+                </a>
                 @endif
                 @if ($reply_item->mime_type == 'document')
                 <a href="{{ Storage::disk('images')->url($reply_item->file_path) }}" class="btn-link text-secondary"><i class="fas fa-file"></i> {{ $reply_item->file_name}}</a>
@@ -57,11 +57,11 @@
                 </div>
                 @endisset
                 @endisset
-                
+
                 <!-- /.direct-chat-text -->
               </div>
               @endforeach
-              
+
             </div>
              </div>
           <!-- /.card-body -->
@@ -77,7 +77,7 @@
           </div>-->
           <!-- /.card-footer-->
         </div>
-      </div>    
+      </div>
     </div>
     @if(!empty($media))
     <section class="content">
@@ -93,7 +93,7 @@
       <a href="{{ Storage::disk('images')->url($link) }}" data-toggle="lightbox" data-title="sample 1 - white" data-gallery="gallery">
         <img src="{{ Storage::disk('images')->url($link) }}" class="img-fluid mb-2" alt="white sample"/>
       </a>
-    </div> 
+    </div>
     @endforeach
   </div>
 </div>
@@ -112,8 +112,8 @@
 @foreach ($document as $document_item)
 <li>
 <a href="{{ Storage::disk('images')->url($document_item->file_path) }}" class="btn-link text-secondary"><i class="fas fa-file"></i> {{ $document_item->file_name}}</a>
-</li>   
-@endforeach  
+</li>
+@endforeach
 </ul>
 </div>
 </div>

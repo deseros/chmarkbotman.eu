@@ -11,8 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tags;
 use App\Models\User;
-use App\Http\Controllers\General\PaginateController;
-use App\Http\Controllers\General\Filters\TicketFilter;
+
 
 class TicketController extends Controller
 {
@@ -21,13 +20,15 @@ class TicketController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Tags $tags, TicketFilter $filter)
+    public function index(Tags $tags, Request $request, Client $client, User $user)
     {
-        Log::info(Ticket::query()->paginate(3));
-        $tickets = Ticket::query()->with('tags')->filter($filter)->paginate(10);
+
+        $tickets = Ticket::filter($request->all())->paginateFilter();
         return view('admin.ticket.index', [
             'ticket' => $tickets,
-            'tags' => $tags->get()
+            'tags' => $tags->get(),
+            'client' => $client->get(),
+            'user' => $user->get(),
         ]);
     }
 
@@ -70,7 +71,7 @@ class TicketController extends Controller
         $media_box = [];
         $docum_box = [];
         $reply_box = [];
-    
+
         $clients = Client::where('id', '=', $ticket['client_id'])->first();
         $media = TicketMedia::where('ticket_id', '=', $ticket['id'])->get();
         foreach($media as $media_item){
@@ -88,8 +89,8 @@ class TicketController extends Controller
         $reply_media = DB::table('replies_medias')->where('ticket_id', '=', $ticket['tg_channel_msg_id'])->get();
         foreach($reply_media as $med_item){
             $reply_box[] = $med_item;
-          
-        }   
+
+        }
         return view('admin.ticket.show',[
             'ticket' => $ticket,
             'client' => $clients,
@@ -107,9 +108,9 @@ class TicketController extends Controller
      */
     public function edit(Ticket $ticket, Tags $tags, User $user)
     {
-        
+
         $clients = Client::orderBy('created_at', 'desc')->get();
-       
+
         return view('admin.ticket.edit',[
             'ticket' => $ticket,
             'client' => $clients,

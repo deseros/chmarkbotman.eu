@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\TicketReplies;
 use App\Http\Controllers\General\Filters\QueryFilter;
+use EloquentFilter\Filterable;
 
 class Ticket extends Model
 {
-    use HasFactory;
+    use HasFactory, Filterable;
 
     protected $fillable = [
       'subject',
@@ -49,14 +50,11 @@ class Ticket extends Model
   return $this->hasMany(TicketReplies::class)->orderBy('created_at', 'desc');
   
  }
-/**
- * @param Builder $builder
- * @param QueryFilter $filter
- */
-public function scopeFilter(Builder $builder, QueryFilter $filter)
-{
-    $filter->apply($builder);
-}
+
+//public function scopeFilter(Builder $builder, QueryFilter $filter)
+//{
+  //  $filter->apply($builder);
+//}
      
     
 }
