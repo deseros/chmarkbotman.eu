@@ -20,7 +20,7 @@ class Ticket extends Model
       'client_id',
       'assign_to',
   ];
-    
+
     public function cur_client()
     {
         return $this->belongsTo('App\Models\Client', 'client_id');
@@ -39,7 +39,10 @@ class Ticket extends Model
       {
           return $this->belongsTo('App\Models\User', 'assigned_to');
       }
-           
+      public function files(){
+        return $this->morphToMany('App\Models\File', 'files_model');
+      }
+
  /**
   * Get all of the comments for the Ticket
   *
@@ -48,13 +51,13 @@ class Ticket extends Model
  public function replies()
  {
   return $this->hasMany(TicketReplies::class)->orderBy('created_at', 'desc');
-  
+
  }
 
 //public function scopeFilter(Builder $builder, QueryFilter $filter)
 //{
   //  $filter->apply($builder);
 //}
-     
-    
+
+
 }

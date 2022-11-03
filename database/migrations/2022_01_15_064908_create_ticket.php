@@ -14,11 +14,14 @@ class CreateTicket extends Migration
     public function up()
     {
         Schema::create('tickets', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->integer('client_id')->unsigned()->index();
             $table->integer('bx_ticket_id')->nullable();
             $table->string('subject');
             $table->text('description')->nullable();
-            $table->integer('client_id');  
+            $table->integer('assigned_to')->nullable();
+            $table->foreign('client_id')->references('id')->on('clients');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

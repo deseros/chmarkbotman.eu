@@ -14,7 +14,7 @@ class TgTokenSession extends Migration
     public function up()
     {
         Schema::create('tg_token_session', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->text('token');
             $table->text('user_id');
         });

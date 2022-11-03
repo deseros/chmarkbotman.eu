@@ -75,7 +75,7 @@ class UsersController extends Controller
      */
     public function edit(User $user, UserHooks $user_hook)
     {
-       
+
         return view('admin.users.edit',[
             'user' => $user,
             'bx_user' => $user_hook->find_user()

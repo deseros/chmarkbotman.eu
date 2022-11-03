@@ -14,6 +14,8 @@ class TicketReplies extends Model
 {
     return $this->belongsTo(Ticket::class);
 }
-
+  public function files(){
+   return $this->morphToMany('App\Models\File', 'files_model');
+  }
 }
 

@@ -15,7 +15,7 @@ class TicketFactory extends Factory
     {
 
         return [
-        'tg_channel_msg_id' => $this->faker->randomNumber(3),
+        //'tg_channel_msg_id' => $this->faker->randomNumber(3),
            'bx_ticket_id' => $this->faker->randomNumber(4),
            'subject' =>$this->faker->realText(20),
            'description' => $this->faker->text(200),

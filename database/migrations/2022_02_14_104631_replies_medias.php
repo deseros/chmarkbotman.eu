@@ -13,13 +13,10 @@ class RepliesMedias extends Migration
      */
     public function up()
     {
-        Schema::create('replies_medias', function (Blueprint $table) {
-            $table->id();
-            $table->integer('ticket_id');
-            $table->string("mime_type");
-            $table->string('file_name');
-            $table->string('file_path');
-            $table->longtext('caption')->nullable();
+        Schema::create('files_models', function (Blueprint $table) {
+            $table->bigInteger('file_id')->unsigned()->index();
+            $table->foreign('file_id')->references('id')->on('file_entries')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->morphs('files_model');
             $table->timestamps();
         });
     }

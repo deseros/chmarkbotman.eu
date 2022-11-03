@@ -13,11 +13,17 @@ class TicketFile extends Migration
      */
     public function up()
     {
-        Schema::create('ticket_medias', function (Blueprint $table) {
-            $table->id();
-            $table->integer('bx_id_file');
-            $table->integer('ticket_id');
+        Schema::create('file_entries', function (Blueprint $table) {
+            $table->id()->autoIncrement();
+            $table->integer('bx_id_file')->nullable();
+            $table->string('original_name');
             $table->string('file_name');
+            $table->integer('file_size');
+            $table->string('file_path');
+            $table->text('mime');
+            $table->tinyText('extension');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

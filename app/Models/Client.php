@@ -19,6 +19,7 @@ class Client extends Model
         'invait_link_channel',
         'key_license_telegram',
     ];
+    protected $table = "clients";
 
     public function tg_id(){
         return $this->hasMany('App\Models\ClientTelegramId', 'clients_id');
@@ -30,7 +31,7 @@ class Client extends Model
  */
 public function users()
 {
-    return $this->hasMany(User::class, 'client_id');
+    return $this->belongsToMany(User::class, 'client_entries', 'client_id');
 }
 public function ticket(){
     return $this->hasMany(Ticket::class, 'client_id');

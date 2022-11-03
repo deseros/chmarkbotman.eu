@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class TelegramID extends Migration
+class ConnectionUserWithClient extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class TelegramID extends Migration
      */
     public function up()
     {
-        Schema::create('oAuth_messend', function (Blueprint $table) {
-            $table->id()->autoIncrement();
+        Schema::create('client_entries', function (Blueprint $table) {
             $table->integer('client_id')->unsigned()->index();
+            $table->bigInteger('user_id')->unsigned()->index();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign('client_id')->references('id')->on('clients')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->integer('telegram_id')->unique()->nullable();
-            $table->integer('viber_id')->unique()->nullable();
-            $table->integer('vk_id')->unique()->nullable();
+            $table->timestamps();
         });
     }
 
@@ -30,6 +29,6 @@ class TelegramID extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('oAuth_messend');
+        Schema::drop('client_entries');
     }
 }

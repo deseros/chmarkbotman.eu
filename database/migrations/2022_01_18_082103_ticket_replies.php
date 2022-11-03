@@ -14,11 +14,14 @@ class TicketReplies extends Migration
     public function up()
     {
         Schema::create('ticket_replies', function (Blueprint $table) {
-            $table->id();
-            $table->integer('ticket_id');
+            $table->increments('id');
+            $table->integer('ticket_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned()->index();
             $table->longText('replies');
             $table->text('username');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('ticket_id')->references('id')->on('tickets')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

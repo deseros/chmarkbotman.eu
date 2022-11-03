@@ -15,8 +15,7 @@ class Taggable extends Migration
     {
         Schema::create('taggables', function (Blueprint $table) {
             $table->integer('tags_id');
-            $table->integer('taggable_id'); 
-            $table->string('taggable_type');      
+            $table->morphs('taggable');
         });
     }
 
