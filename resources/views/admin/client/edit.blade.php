@@ -3,13 +3,15 @@
 @section('title', 'Редактирование записи')
 
 @section('content')
+<link rel="stylesheet" href="/admin/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
           <h1 class="m-0">Редактирование записи {{ $client['cat_title']}}</h1>
         </div><!-- /.col -->
-       
+
       </div><!-- /.row -->
       @if (session('success'))
       <div class="alert alert-success" role="alert">
@@ -27,12 +29,14 @@
         <div class="card card-primary">
 
             <!-- form start -->
-           
+
                 <form action={{ route('client.update',$client['id'])}} method="POST">
                   @csrf
                   @method('PUT')
+
                 <div class="card-body">
                   <div class="form-group">
+
                     <label for="name-client">Наименование клиента</label>
                     <input type="text" name="name_client"  value="{{ $client['name_client']}}" class="form-control" id="name-client" placeholder="Укажите название клиента" required>
                   </div>
@@ -59,7 +63,7 @@
                     <label for="invait_link_channel">Пригласительная ссылка в Telegram канал клиента</label>
                     <input type="textarea" name="invait_link_channel"  value="{{ $client['invait_link_channel']}}" class="form-control" id="invait_link_channel" placeholder="Укажите инвайт ссылку">
                   </div>
-                  
+
                   <div class="form-group">
                     <label for="key_license_telegram">Лицензионный ключ к Telegram боту</label>
                     <div class="row">
@@ -68,14 +72,19 @@
                       </div>
                       <div class="col-md-2 col-lg-2 col-12">
                     <button type="button" id="key-gen" class="btn btn-block btn-primary btn-flat">Генерация ключа</button>
-                      </div>  
+                      </div>
                   </div>
-                <div>
-                  <label>Список ID телеграмма</label>
-                  @foreach ($client->tg_id as $itemka)
-                  <p>{{$itemka['telegram_id']}}</p>    
-                  @endforeach
-                </div>
+                  <div class="form-group">
+                    <label>Список пользователей</label>
+                    <div class="select2-purple">
+                    <select name="array_users[]" class="select2" multiple="multiple" data-dropdown-css-class="select2-purple" data-placeholder="Выберите пользователей" style="width: 50%;">
+                    @foreach ($user as $user_item)
+                        <option value="{{$user_item['id']}}" @if (in_array($user_item['id'], $current_users)) selected
+                        @endif>{{$user_item['name']}}</option>
+                    @endforeach
+                    </select>
+                    </div>
+                  </div>
                 <!--<div class="form-group">
                   <label for="exampleInputFile">Добавить файлы</label>
                   <div class="input-group">
@@ -88,7 +97,7 @@
                     </div>
                   </div>
                 </div>-->
-                
+
               </div>
               <!-- /.card-body -->
 
@@ -99,5 +108,5 @@
           </div>
     </div>
         </section>
-      
+
 @endsection

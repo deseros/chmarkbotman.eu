@@ -15,8 +15,8 @@ class TelegramID extends Migration
     {
         Schema::create('oAuth_messend', function (Blueprint $table) {
             $table->id()->autoIncrement();
-            $table->integer('client_id')->unsigned()->index();
-            $table->foreign('client_id')->references('id')->on('clients')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->bigInteger('user_id')->unsigned()->index();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('telegram_id')->unique()->nullable();
             $table->integer('viber_id')->unique()->nullable();
             $table->integer('vk_id')->unique()->nullable();

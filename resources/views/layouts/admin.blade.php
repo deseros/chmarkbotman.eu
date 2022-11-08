@@ -64,7 +64,7 @@
         </a>
       </li>
       <li class="nav-item">
-        
+
         <a class="nav-link" href="{{ route('logout.perform') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -93,11 +93,11 @@
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
           @if (Auth::user()->avatar != null)
-          <img src="{{ Storage::disk('images')->url(Auth::user()->avatar) }}" class="img-circle elevation-2" alt="User Image">   
+          <img src="{{ Storage::disk('images')->url(Auth::user()->avatar) }}" class="img-circle elevation-2" alt="User Image">
           @else
           <img src="/admin/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
           @endif
-          
+
         </div>
         <div class="info">
           <a href="#" class="d-block">{{ Auth::user()->name}}</a>
@@ -119,7 +119,7 @@
 
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        
+
           <li class="nav-item menu-open">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -129,7 +129,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-            
+
           <li class="nav-header">МЕНЮ</li>
           <li class="nav-item">
             <li class="nav-item">
@@ -141,7 +141,7 @@
                   </p>
                 </a>
               </li>
-           
+
           </li>
           <li class="nav-item">
             <a href="pages/gallery.html" class="nav-link">
@@ -162,7 +162,7 @@
           <li class="nav-item">
             <a href="#" class="nav-link">
                 <i class="nav-icon far fa-id-card"></i>
-              
+
               <p>
                 Клиенты
                 <i class="fas fa-angle-left right"></i>
@@ -171,13 +171,13 @@
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href={{ route('client.create')}} class="nav-link">
-                  
+
                   <p>Создать клиента</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href={{ route('client.index')}} class="nav-link">
-                  
+
                   <p>Все клиенты</p>
                 </a>
               </li>
@@ -186,7 +186,7 @@
           <li class="nav-item">
             <a href="#" class="nav-link">
                 <i class="nav-icon fab fa-telegram"></i>
-              
+
               <p>
                 Обращения
                 <i class="fas fa-angle-left right"></i>
@@ -195,13 +195,13 @@
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href={{ route('tickets.create')}} class="nav-link">
-                  
+
                   <p>Создать обращение</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href={{ route('tickets.index')}} class="nav-link">
-                  
+
                   <p>Все обращения</p>
                 </a>
               </li>
@@ -210,7 +210,7 @@
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-tags" aria-hidden="true"></i>
-              
+
               <p>
                 Теги
                 <i class="fas fa-angle-left right"></i>
@@ -219,13 +219,13 @@
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href={{ route('tags.create')}} class="nav-link">
-                  
+
                   <p>Создать теги</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href={{ route('tags.index')}} class="nav-link">
-                  
+
                   <p>Все теги</p>
                 </a>
               </li>
@@ -234,7 +234,7 @@
           <li class="nav-item">
             <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-user"></i>
-              
+
               <p>
                 Пользователи
                 <i class="fas fa-angle-left right"></i>
@@ -243,20 +243,20 @@
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href={{ route('users.create')}} class="nav-link">
-               
+
                   <p>Добавить пользователя</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href={{ route('users.index')}} class="nav-link">
-                  
+
                   <p>Все пользователи</p>
                 </a>
               </li>
             </ul>
           </li>
-          
-          
+
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -315,7 +315,16 @@
 <!-- AdminLTE for demo purposes -->
 <script src="/admin/dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="/admin/plugins/select2/js/select2.full.min.js"></script>
+<script>
+    $(function () {
+      //Initialize Select2 Elements
+      $('.select2').select2();
 
+      //Initialize Select2 Elements
+
+    });
+      </script>
 <script>
   $(function () {
     bsCustomFileInput.init();
@@ -331,6 +340,6 @@
       });
     })
   </script>
- 
+
 </body>
 </html>

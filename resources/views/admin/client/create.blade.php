@@ -3,13 +3,15 @@
 @section('title', 'Добавление клиента')
 
 @section('content')
+<link rel="stylesheet" href="/admin/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
           <h1 class="m-0">Добавление клиента</h1>
         </div><!-- /.col -->
-       
+
       </div><!-- /.row -->
       @if (session('success'))
       <div class="alert alert-success" role="alert">
@@ -31,8 +33,8 @@
                 @csrf
               <div class="card-body">
                 <div class="form-group">
-                  <label for="name-client">Наименование клиента</label>
-                  <input type="text" name="name_client" class="form-control" id="name-client" placeholder="Укажите название клиента" required>
+                  <label for="name_client">Наименование клиента</label>
+                  <input type="text" name="name_client" class="form-control" id="name_client" placeholder="Укажите название клиента" required>
                 </div>
                 <div class="form-group">
                   <label for="bx_group_id">ID группы в битрикс24</label>
@@ -58,10 +60,20 @@
                     </div>
                     <div class="col-md-2 col-lg-2 col-12">
                   <button type="button"  id="key-gen" class="btn btn-block btn-primary btn-flat">Генерация ключа</button>
-                    </div>  
+                    </div>
                 </div>
                 </div>
-                
+
+                <div class="form-group">
+                    <label>Список пользователей</label>
+                    <div class="select2-purple">
+                    <select name="array_users[]" class="select2" multiple="multiple" data-dropdown-css-class="select2-purple" data-placeholder="Выберите пользователей" style="width: 50%;">
+                    @foreach ($user as $user_item)
+                        <option value="{{$user_item['id']}}">{{$user_item['name']}}</option>
+                    @endforeach
+                    </select>
+                    </div>
+                  </div>
                 <!--<div class="form-group">
                   <label for="exampleInputFile">Добавить файлы</label>
                   <div class="input-group">
@@ -74,7 +86,7 @@
                     </div>
                   </div>
                 </div>-->
-                
+
               </div>
               <!-- /.card-body -->
 
@@ -85,5 +97,6 @@
           </div>
     </div>
         </section>
-      
+
 @endsection
+

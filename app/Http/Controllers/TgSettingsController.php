@@ -18,32 +18,29 @@ class TgSettingsController extends Controller
 {
     use HasRoles;
 
-    public function index(Tags $tags){
+    public function index(){
 
-        Log::info(Client::find(16)->users);
-        Log::info($tags->getTaskStatus());
-        //Log::info(User::find(Auth::user()->id)->hasRole('admin'));
         return view('admin.tgsetting.index', [
-       
+
         ]);
-        
+
     }
     public function update_setting(Request $request){
         $path = base_path('.env');
 
         if (file_exists($path)) {
-            
+
                 $new_app_name = str_replace(' ', '&nbsp', $request->name_app);
            file_put_contents($path, str_replace(
                 'APP_URL='.env('APP_URL'), 'APP_URL='.$new_app_name, file_get_contents($path)
             ));
-        
-        
+
+
            file_put_contents($path, str_replace(
                 'TELEGRAM_BOT_TOKEN='.env('TELEGRAM_BOT_TOKEN'), 'TELEGRAM_BOT_TOKEN='.$request->token_bot_main, file_get_contents($path)
             ));
-            
-       
+
+
             file_put_contents($path, str_replace(
                 'TELEGRAM_BOT_TOKEN_COMMENT ='.env('TELEGRAM_BOT_TOKEN_COMMENT'), 'TELEGRAM_BOT_TOKEN_COMMENT='.$request->token_bot_comment, file_get_contents($path)
             ));
@@ -54,5 +51,5 @@ class TgSettingsController extends Controller
         }
         return redirect()->back()->withSuccess('Настройки обновлены');
     }
-   
+
 }

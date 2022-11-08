@@ -21,14 +21,6 @@ class Client extends Model
     ];
     protected $table = "clients";
 
-    public function tg_id(){
-        return $this->hasMany('App\Models\ClientTelegramId', 'clients_id');
-    }
-/**
- * Get all of the comments for the Client
- *
- * @return \Illuminate\Database\Eloquent\Relations\HasMany
- */
 public function users()
 {
     return $this->belongsToMany(User::class, 'client_entries', 'client_id');

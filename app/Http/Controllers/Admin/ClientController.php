@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Http\Controllers\Admin\Hooks\ClientHooks;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class ClientController extends Controller
@@ -28,9 +29,11 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(User $user)
     {
-        return view('admin.client.create');
+        return view('admin.client.create', [
+            'user' => $user->all()
+        ]);
     }
 
     /**
@@ -39,17 +42,22 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Client $client)
     {
-        $new_client = new Client();
-        $new_client->name_client = $request->name_client;
-        $new_client->bx_id_group = $request->bx_id_group;
-        $new_client->bx_id_user = $request->bx_id_user;
-        $new_client->channel_chat_id = $request->channel_chat_id;
-        $new_client->invait_link_channel = $request->invait_link_channel;
-        $new_client->key_license_telegram = $request->key_license_telegram;
 
-        $new_client->save();
+
+        $this->validate($request, [
+            'name_client' => 'required|string|min:3|max:255',
+            'bx_id_group' => 'required|integer',
+             'bx_id_user' => 'required|integer',
+             'channel_chat_id' => 'required|string',
+             'invait_link_channel' => 'required|string',
+             'key_license_telegram' => 'required|string|max:40',
+        ]);
+        $current_client = $client->create($request->all());
+        //$client->save();
+        $current_client->users()->sync($request->array_users);
+        //dd($request->all());
 
         return redirect()->back()->withSuccess('Клиент успешно добавлен');
     }
@@ -71,14 +79,19 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Client $client, ClientHooks $bx24)
+    public function edit(Client $client, ClientHooks $bx24, User $user)
     {
-       
+       $current_users = [];
+       foreach($client->users as $user_item){
+        $current_users[] = $user_item->id;
+       }
         return view('admin.client.edit',[
             'client' => $client,
-            'bx_group' => $bx24->find_group()
+            'bx_group' => $bx24->find_group(),
+             'user' =>$user->all(),
+             'current_users' => $current_users
         ]);
-       
+
     }
 
     /**
@@ -90,13 +103,9 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
-        $client->name_client = $request->name_client;
-        $client->bx_id_group = $request->bx_id_group;
-        $client->bx_id_user = $request->bx_id_user;
-        $client->channel_chat_id = $request->channel_chat_id;
-        $client->invait_link_channel = $request->invait_link_channel;
-        $client->key_license_telegram = $request->key_license_telegram;
-        $client->save();
+
+        $update_client = $client->update($request->all());
+        $client->users()->sync($request->array_users);
 
         return redirect()->back()->withSuccess('Клиент успешно обновлен!');
     }

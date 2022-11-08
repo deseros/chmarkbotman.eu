@@ -9,11 +9,11 @@ class Tags extends Model
 {
     use HasFactory;
 
-    
+
 
     protected $table = 'tags';
     public $timestamps = false;
-    
+
     protected $fillable = [
         'name_tags',
         'type_tags',
@@ -24,6 +24,7 @@ class Tags extends Model
     public function ticket(){
       return $this->morphedByMany(Ticket::class, 'taggable');
     }
+
     public function getTaskStatus(){
 
       return  $this->where('type_tags', 'status')->get();
