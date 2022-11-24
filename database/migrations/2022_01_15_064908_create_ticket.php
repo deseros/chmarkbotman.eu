@@ -15,12 +15,13 @@ class CreateTicket extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('client_id')->unsigned()->index();
+            $table->biginteger('provider_id')->unsigned()->index();
             $table->integer('bx_ticket_id')->nullable();
             $table->string('subject');
             $table->text('description')->nullable();
-            $table->integer('assigned_to')->nullable();
-            $table->foreign('client_id')->references('id')->on('clients');
+            $table->biginteger('assigned_to')->nullable()->unsigned()->index();
+            $table->foreign('provider_id')->references('id')->on('users');
+            $table->foreign('assigned_to')->references('id')->on('users');
             $table->softDeletes();
             $table->timestamps();
         });

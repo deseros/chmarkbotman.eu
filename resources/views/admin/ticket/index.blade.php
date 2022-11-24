@@ -94,7 +94,7 @@ margin-left:10px;
 
           <div class="col-md-3">
             <p class="filter_head_block">Клиент</p>
-            <div class="filter_item_content">
+            <div class="filter_item_content"  style="height: 200px; overflow-y: scroll;">
                 @foreach ($client as $client_item)
                 <div class="filter_item_container">
                  <input
@@ -190,7 +190,8 @@ margin-left:10px;
                             <br/>
 
                         </td>
-                         <td>{{ $ticket_item->cur_client['name_client']}}</td>
+
+                         <td>{{$ticket_item->provider(1)}}</td>
                          <td>
                          @if ($ticket_item['assigned_to'])
                          {{$ticket_item->assignee['name']}}

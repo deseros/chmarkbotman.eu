@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\TicketReplies;
 use App\Http\Controllers\General\Filters\QueryFilter;
 use EloquentFilter\Filterable;
+use App\Models\Client;
+use App\Models\User;
 
 class Ticket extends Model
 {
@@ -17,17 +19,15 @@ class Ticket extends Model
     protected $fillable = [
       'subject',
       'description',
-      'client_id',
+      'provider_id',
       'assign_to',
   ];
 
-    public function cur_client()
+
+    public function find_client($id)
     {
-        return $this->belongsTo('App\Models\Client', 'client_id');
-    }
-    public function client()
-    {
-        return $this->belongsTo('App\Models\Client', 'client_id');
+      return Client::find($id);
+
     }
 
     public function tags()
@@ -37,11 +37,22 @@ class Ticket extends Model
 
       public function assignee()
       {
-          return $this->belongsTo('App\Models\User', 'assigned_to');
+          return $this->belongsTo(User::class, 'assigned_to');
       }
       public function files(){
         return $this->morphToMany('App\Models\File', 'files_model');
       }
+      public function user($id){
+
+       return User::find($id);
+
+    }
+    public function provider($id){
+        $user = new User();
+        $provider = Ticket::find($id)->provider_id;
+        $client = Client::find($user->find_clients($provider)->pivot)->first()->name_client;
+        return $client;
+    }
 
  /**
   * Get all of the comments for the Ticket

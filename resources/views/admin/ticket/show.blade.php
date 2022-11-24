@@ -12,7 +12,10 @@
           <div class="card-body">
           <h3 class="text-primary">{{$ticket['subject']}}</h3>
           <p class="text-muted">{{$ticket['description']}}</p>
-          <p><b>Наименование клиента</b> {{ $client['name_client']}}</p>
+          <p><b>Отвественный</b> {{ $ticket->user($ticket->assigned_to)->name}}</p>
+          <p><b>Постановщик</b> {{ $ticket->user($ticket->provider_id)->name}}</p>
+          <p><b>Наименование организации</b>{{$ticket->find_client($user->find_clients($ticket->provider_id)->pivot->client_id)->name_client}}</p>
+
           </div>
       </div>
       <div class="col-sm-6">
@@ -42,20 +45,11 @@
               </div>
                 @endisset
 
-                @isset($reply_item->file_path)
-                @if ($reply_item->mime_type == 'photo')
-                <a href="{{ Storage::disk('images')->url($reply_item->file_path) }}" data-toggle="lightbox" data-title="{{$reply_item->file_name}}" data-gallery="gallery">
-                  <img src="{{ Storage::disk('images')->url($reply_item->file_path) }}" class="img-fluid mb-2" alt="white sample"  width="300"/>
-                </a>
-                @endif
-                @if ($reply_item->mime_type == 'document')
-                <a href="{{ Storage::disk('images')->url($reply_item->file_path) }}" class="btn-link text-secondary"><i class="fas fa-file"></i> {{ $reply_item->file_name}}</a>
-                @endif
-                @isset($reply_item->caption)
-                <div class="direct-chat-text">
-                  {{ $reply_item->caption}}
-                </div>
-                @endisset
+                @isset($reply_item->files)
+
+
+                <a href="{{ Storage::disk('images')->url($reply_item->file_path) }}" class="btn-link text-secondary"><i class="fas fa-file"></i> {{ $reply_item->original_name}}</a>
+
                 @endisset
 
                 <!-- /.direct-chat-text -->

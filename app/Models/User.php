@@ -44,8 +44,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function clients(){
+    public function clients()
+    {
+        return $this->belongsToMany(Client::class, 'client_entries', 'user_id');
+    }
+    public function find_clients($id){
 
-        $this->hasMany(Client::class, 'clients');
+        return User::find($id)->clients()->first();
     }
 }

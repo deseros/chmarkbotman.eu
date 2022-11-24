@@ -9,7 +9,7 @@
         <div class="col-sm-6">
           <h1 class="m-0">Редактирование записи </h1>
         </div><!-- /.col -->
-       
+
       </div><!-- /.row -->
       @if (session('success'))
       <div class="alert alert-success" role="alert">
@@ -26,13 +26,13 @@
     <div class="container-fluid">
         <div class="card card-primary">
 
-            <!-- form start -->
-           
+
+
                 <form action={{ route('tickets.update',$ticket['id'])}} method="POST">
                   @csrf
                   @method('PUT')
-           
-                
+
+
                   <div class="card-body">
                     <div class="form-group">
                       <label for="name-client">Тема</label>
@@ -71,7 +71,7 @@
                             @endforeach
                         </select>
                         </div>
-                      
+
               </div>
               <!-- /.card-body -->
 
@@ -82,5 +82,5 @@
           </div>
     </div>
         </section>
-      
+
 @endsection

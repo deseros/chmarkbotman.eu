@@ -28,7 +28,7 @@ class TicketController extends Controller
             'ticket' => $tickets,
             'tags' => $tags->get(),
             'client' => $client->get(),
-            'user' => $user->get(),
+            'user' => $user->all(),
         ]);
     }
 
@@ -66,37 +66,12 @@ class TicketController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Ticket $ticket)
+    public function show(Ticket $ticket, User $user)
     {
-        $media_box = [];
-        $docum_box = [];
-        $reply_box = [];
 
-        $clients = Client::where('id', '=', $ticket['client_id'])->first();
-        $media = TicketMedia::where('ticket_id', '=', $ticket['id'])->get();
-        foreach($media as $media_item){
-            if($media_item->mime_type == 'photo'){
-            $media_box[] = $media_item->file_path;
-            }
-            if($media_item->mime_type == 'document'){
-               $docum_box[] =  $media_item;
-            }
-        }
-        $replies = DB::table('ticket_replies')->where('ticket_id', '=', $ticket['tg_channel_msg_id'])->get();
-        foreach($replies as $rep_item){
-            $reply_box[] = $rep_item;
-        }
-        $reply_media = DB::table('replies_medias')->where('ticket_id', '=', $ticket['tg_channel_msg_id'])->get();
-        foreach($reply_media as $med_item){
-            $reply_box[] = $med_item;
-
-        }
         return view('admin.ticket.show',[
             'ticket' => $ticket,
-            'client' => $clients,
-            'media' => $media_box,
-            'document' => $docum_box,
-            'reply_msg' => collect($reply_box)->sortBy('created_at')
+            'user' => $user,
         ]);
     }
 

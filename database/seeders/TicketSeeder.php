@@ -20,9 +20,8 @@ class TicketSeeder extends Seeder
     public function run()
     {
         $user = User::inRandomOrder()->firstOrFail();
-        $client = Client::inRandomOrder()->firstOrFail();
         $file = File::inRandomOrder()->firstOrFail();
-        $tickets = Ticket::factory()->count(5)->create(['assigned_to' => $user->id, 'client_id' => $client->id]);
+        $tickets = Ticket::factory()->count(5)->create(['assigned_to' => $user->id, 'provider_id' => $user->id]);
         $openTag = Tags::inRandomOrder()->firstOrFail();
 
        foreach ($tickets as $ticket) {
